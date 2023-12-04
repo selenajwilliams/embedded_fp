@@ -1,7 +1,7 @@
 
 # ignore env
-/env
+/env/
 
 # ignore makefiles
-/__pyache__
-/.pytest_cache
+/__pyache__/
+/.pytest_cache/
