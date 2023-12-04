@@ -3,5 +3,6 @@
 env/
 
 # ignore makefiles
-__pyache__/
+__pycache__/
 .pytest_cache/
+src/__pycache__/
