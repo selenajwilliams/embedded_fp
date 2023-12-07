@@ -3,21 +3,31 @@ import numpy as np
 import librosa
 
 
-y, sr = librosa.load('panama.wav')
-librosa.onset.onset_detect(y=y, sr=sr, units='time')
+def visualize(file_path):
+    y, sr = librosa.load(file_path)
 
-o_env = librosa.onset.onset_strength(y=y, sr=sr)
-times = librosa.times_like(o_env, sr=sr)
-onset_frames = librosa.onset.onset_detect(onset_envelope=o_env, sr=sr)
+    # y, sr = librosa.load(librosa.ex('trumpet'))
+    onset_env = librosa.onset.onset_strength(y=y, sr=sr,
+                                            hop_length=512,
+                                            aggregate=np.median)
+    peaks = librosa.util.peak_pick(onset_env, pre_max=100, post_max=100, 
+                                   pre_avg=100, post_avg=100, delta=0.5, wait=10)
+    
+    times = librosa.times_like(onset_env, sr=sr, hop_length=512)
+    fig, ax = plt.subplots(nrows=2, sharex=True)
+    D = np.abs(librosa.stft(y))
+    
+    librosa.display.specshow(librosa.amplitude_to_db(D, ref=np.max),
+                            y_axis='log', x_axis='time', ax=ax[1])
+    ax[0].plot(times, onset_env, alpha=0.8, label='Onset strength')
+    ax[0].vlines(times[peaks], 0,
+                onset_env.max(), color='r', alpha=0.8,
+                label='Selected peaks')
+    ax[0].legend(frameon=True, framealpha=0.8)
+    ax[0].label_outer()
 
+    plt.show()
 
-D = np.abs(librosa.stft(y))
-fig, ax = plt.subplots(nrows=2, sharex=True)
-librosa.display.specshow(librosa.amplitude_to_db(D, ref=np.max),
-                         x_axis='time', y_axis='log', ax=ax[0])
-ax[0].set(title='Power spectrogram')
-ax[0].label_outer()
-ax[1].plot(times, o_env, label='Onset strength')
-ax[1].vlines(times[onset_frames], 0, o_env.max(), color='r', alpha=0.9,
-           linestyle='--', label='Onsets')
-ax[1].legend()
+if __name__ == "__main__":
+    file_path = 'panama.wav'
+    visualize(file_path)

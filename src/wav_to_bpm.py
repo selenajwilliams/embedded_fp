@@ -30,8 +30,9 @@ def calculate_peaks(input_file):
                                          hop_length=512,
                                          aggregate=np.median)
     # custom params so that peaks don't occur > 1 every second
-    peaks = librosa.util.peak_pick(onset_env, pre_max=3, post_max=3, 
-                                   pre_avg=3, post_avg=5, delta=0.5, wait=100)
+    peaks = librosa.util.peak_pick(onset_env, pre_max=100, post_max=100, 
+                                   pre_avg=100, post_avg=100, delta=0.5, wait=10)
+    
     peak_times = librosa.frames_to_time(peaks, sr=sr)
 
     # convert to millis & round to nearest integer
@@ -43,7 +44,8 @@ def calculate_peaks(input_file):
 
     print("detecting beats...")
     print(f"{len(peak_times)} peaks found")
-    print(peak_times)
+    # [print(x) for x in rounded_peaks]
+    print(f"beat timestamp: \n{rounded_peaks}")
 
     num_peaks = len(peak_times)
 

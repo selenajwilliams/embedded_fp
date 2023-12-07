@@ -16,7 +16,7 @@ app = Flask(__name__)
 
 @app.before_request
 def before_request():
-    bpm, beats, num_beats = wav_to_bpm.extract_bpm("panama.wav")
+    bpm, beats, num_beats = wav_to_bpm.extract_audio_data("panama.wav")
 
     g.bpm = bpm
     g.beats = beats
